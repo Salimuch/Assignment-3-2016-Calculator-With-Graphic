@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CalculatorViewController: UIViewController {
+class CalculatorViewController: UIViewController, UISplitViewControllerDelegate {
     
     @IBOutlet private weak var display: UILabel!
     @IBOutlet private weak var history: UILabel!
@@ -91,6 +91,30 @@ class CalculatorViewController: UIViewController {
         }
         displayValue = brain.result
     }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        splitViewController?.delegate = self
+    }
+    
+    func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController, ontoPrimaryViewController primaryViewController: UIViewController) -> Bool {
+        if primaryViewController.contentViewController == self {
+            if let ivc = secondaryViewController.contentViewController as? GraphicViewController {
+                return true
+            }
+        }
+        return false
+    }
 
+}
+
+extension UIViewController {
+    var contentViewController: UIViewController {
+        if let navcon = self as? UINavigationController {
+            return navcon.visibleViewController ?? self
+        } else {
+            return self
+        }
+    }
 }
 
