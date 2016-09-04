@@ -12,6 +12,10 @@ class CalculatorViewController: UIViewController, UISplitViewControllerDelegate 
     
     @IBOutlet private weak var display: UILabel!
     @IBOutlet private weak var history: UILabel!
+    
+    
+    @IBOutlet weak var button: UIButton!
+    
 
     @IBAction func pullM(sender: UIButton) {
         brain.setOperand(sender.currentTitle!)
@@ -95,6 +99,9 @@ class CalculatorViewController: UIViewController, UISplitViewControllerDelegate 
     override func viewDidLoad() {
         super.viewDidLoad()
         splitViewController?.delegate = self
+        
+        let isPortrateView = traitCollection.horizontalSizeClass == .Compact && traitCollection.verticalSizeClass == .Regular
+        configButtonLayout(view, isPortrateView: isPortrateView)
     }
     
     func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController, ontoPrimaryViewController primaryViewController: UIViewController) -> Bool {
@@ -104,6 +111,23 @@ class CalculatorViewController: UIViewController, UISplitViewControllerDelegate 
             }
         }
         return false
+    }
+    
+    override func willTransitionToTraitCollection(newCollection: UITraitCollection, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        super.willTransitionToTraitCollection(newCollection, withTransitionCoordinator: coordinator)
+        let isPortrateView = newCollection.horizontalSizeClass == .Compact && newCollection.verticalSizeClass == .Regular
+        configButtonLayout(view, isPortrateView: isPortrateView)
+    }
+
+    private func configButtonLayout (view: UIView, isPortrateView: Bool) {
+        for subview in view.subviews {
+            if subview.tag == 1 {
+                subview.hidden = isPortrateView
+            }
+            if let stack = subview as? UIStackView {
+                configButtonLayout(stack, isPortrateView: isPortrateView);
+            }
+        }
     }
 
 }
