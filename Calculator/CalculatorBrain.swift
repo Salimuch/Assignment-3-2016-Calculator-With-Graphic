@@ -13,6 +13,7 @@ class CalculatorBrain {
     private var accumulator = 0.0
     private var pending: PendingBinaryOperationInfo?
     private var currentPriority = 1
+    
     private var descriptionAccumulator = " " {
         didSet {
             if pending == nil {
@@ -20,6 +21,7 @@ class CalculatorBrain {
             }
         }
     }
+    
     private var internalProgram = [AnyObject]()
     
     var variableValues = [String:Double]() {

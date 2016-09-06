@@ -106,11 +106,26 @@ class CalculatorViewController: UIViewController, UISplitViewControllerDelegate 
     
     func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController, ontoPrimaryViewController primaryViewController: UIViewController) -> Bool {
         if primaryViewController.contentViewController == self {
-            if let ivc = secondaryViewController.contentViewController as? GraphicViewController {
+            if let graphVC = secondaryViewController.contentViewController as? GraphicViewController where graphVC.yFuncX == nil {
                 return true
             }
         }
         return false
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if let graphVC = segue.destinationViewController.contentViewController as? GraphicViewController,
+        identifier = segue.identifier where identifier == "graphic"  {
+            graphVC.navigationItem.title = brain.description
+            graphVC.yFuncX = { [weak weakSelf = self] x in
+                weakSelf?.brain.variableValues["M"] = x
+                return weakSelf?.brain.result ?? 0.0
+            }
+        }
+    }
+    
+    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
+        return !brain.isPartialResult
     }
     
     override func willTransitionToTraitCollection(newCollection: UITraitCollection, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
@@ -121,12 +136,17 @@ class CalculatorViewController: UIViewController, UISplitViewControllerDelegate 
 
     private func configButtonLayout (view: UIView, isPortrateView: Bool) {
         for subview in view.subviews {
-            if subview.tag == 1 {
-                subview.hidden = isPortrateView
+//            if subview.tag == 1 {
+//                subview.hidden = isPortrateView
+//            }
+            if let button = subview as? UIButton {
+                button.titleLabel?.adjustsFontSizeToFitWidth = true
+                button.titleLabel?.minimumScaleFactor = 0.2
+                
             }
-            if let stack = subview as? UIStackView {
-                configButtonLayout(stack, isPortrateView: isPortrateView);
-            }
+//            if let stack = subview as? UIStackView {
+//                configButtonLayout(stack, isPortrateView: isPortrateView);
+//            }
         }
     }
 

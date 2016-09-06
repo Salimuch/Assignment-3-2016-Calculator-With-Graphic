@@ -10,7 +10,8 @@ import UIKit
 
 class GraphicViewController: UIViewController {
     
-    
+    var yFuncX: ((x: Double) -> Double)? { didSet {updateUI()} }
+        
     @IBOutlet weak var graphicView: GraphicView! {
         didSet {
             let pinchGuesterRecognizer = UIPinchGestureRecognizer(target: graphicView,
@@ -25,6 +26,8 @@ class GraphicViewController: UIViewController {
                                                               action: #selector(graphicView.changeOrigin(_:)))
             tapGuesterRecognizer.numberOfTapsRequired = 2
             graphicView.addGestureRecognizer(tapGuesterRecognizer)
+            
+            updateUI()
 
         }
     }
@@ -33,4 +36,7 @@ class GraphicViewController: UIViewController {
         super.viewDidLoad()
     }
 
+    private func updateUI() {
+            graphicView?.yFuncX = yFuncX
+    }
 }
